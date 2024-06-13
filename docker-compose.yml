@@ -1,0 +1,35 @@
+version: '3' # กำหนด docker version
+services:
+  node-server: # ตั้งชื่อ container (เหมือน --name)
+    build: . # ตำแหน่ง dockerfile
+    ports:
+      - "8000:8000" # map port ออกมา เหมือน -p ใน docker run 
+    volumes:
+      - ./path/to/source/index.js:/use/src/app/# Mount ไฟล์ index.js จาก host
+    working_dir: /use/src/app
+    command: npm start
+    
+  db:
+    image: mariadb:10.6
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tutorial
+    volumes:
+      - mysql_data_test:/var/lib/mysql
+
+      
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+      
+volumes:
+  mysql_data_test: # กำหนดชื่อ volume ที่ต้องการจะสร้าง
+    driver: local 
